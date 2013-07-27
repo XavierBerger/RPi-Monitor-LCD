@@ -1,0 +1,128 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# sudo pip install fysom
+#
+from fysom import Fysom
+import wiringpi2 as wiringpi
+import pcd8544.lcd as lcd
+from lib.daemon import Daemon
+import os, sys, signal
+
+if not os.geteuid() == 0:
+    sys.exit('Script must be run as root')
+
+# Define constants
+INPUT, OUTPUT = [0, 1]
+LOW, HIGH = [0, 1]
+ON, OFF = [1, 0]
+BUTTONS = [0,1,2,3,4]
+PUD_UP = 2
+PIN_BASE = 65
+I2C_ADDR = 0x20
+
+class RpiMonitorLCD(Daemon):
+
+    def initialize(self):
+ 
+        # Initialize wiringpi
+        wiringpi.wiringPiSetup()
+        wiringpi.mcp23017Setup(PIN_BASE,I2C_ADDR)
+        for button in BUTTONS:
+	    wiringpi.pinMode(PIN_BASE + button,INPUT)
+	    wiringpi.pullUpDnControl(PIN_BASE + button,PUD_UP)
+
+        # Initialize state machine
+        fsm = Fysom({'initial': 'green',
+                     'events': [
+                         {'name': 'up',    'src': 'green', 'dst': 'green'},
+                         {'name': 'down',  'src': 'green', 'dst': 'green'},
+                         {'name': 'left',  'src': 'green', 'dst': 'green'},
+                         {'name': 'right', 'src': 'green', 'dst': 'green'},
+                         {'name': 'enter', 'src': 'green', 'dst': 'green'}],
+                     'callbacks': {
+                         'onup':    self.onup,
+                         'ondown':  self.ondown,
+                         'onleft':  self.onleft,
+                         'onright': self.onright,
+                         'onenter': self.onenter }})
+        self.ACTIONS = [ fsm.up, fsm.down, fsm.left, fsm.right, fsm.enter ]
+
+        # Initialize LCD
+        lcd.init()
+        lcd.cls()
+        self.seconds = 5
+        self.lightOn()
+        signal.signal(signal.SIGTERM, self.exiting)
+   
+    #
+    def lightOn(self):
+        self.lighttimer = self.seconds * 50
+        lcd.backlight(ON)
+ 
+    # Catch SIGTERM to turn off the screen when the daemon is stopped
+    def exiting(self, signum, frame):
+        lcd.cls()
+        lcd.backlight(OFF)
+        sys.exit(0)
+ 
+
+    # Implement callbacks
+    def onup(self,msg):
+        lcd.cls()
+        self.loghtOn()
+        lcd.center_word(3,'key up')
+    def ondown(self,msg):
+        lcd.cls()
+        self.loghtOn() 
+        lcd.center_word(3,'key down')
+    def onleft(self,msg):
+        lcd.cls()
+        self.loghtOn()
+        lcd.center_word(3,'key left')
+    def onright(self,msg):
+        lcd.cls()
+        self.loghtOn()
+        lcd.center_word(3,'key right')
+    def onenter(self,msg):
+        lcd.cls()
+        self.loghtOn()
+        lcd.center_word(3,'key enter')
+
+    def run(self):
+        self.initialize()
+        # Start main loop
+        while True:
+            for index,button in enumerate(BUTTONS):
+                button_state = wiringpi.digitalRead(button)
+                if button_state:
+                    try:
+                        self.ACTIONS[index];
+                    finally:
+                        pass
+            if self.lighttimer > 0:
+                self.lighttimer -= 1
+                if self.lighttimer == 0:
+                    lcd.backlight(OFF)
+            wiringpi.delay(20)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid','/dev/stdin','/dev/stdout','/dev/stderr')
+        #daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid')
+        if 'start' == sys.argv[1]:
+            daemon.start()
+        elif 'stop' == sys.argv[1]:
+            daemon.stop()
+        elif 'restart' == sys.argv[1]:
+            daemon.restart()
+        else:
+            print "Unknown command"
+            sys.exit(2)
+        sys.exit(0)
+    else:
+        print "usage: %s start|stop|restart" % sys.argv[0]
+        sys.exit(2)
+
+
