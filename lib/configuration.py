@@ -11,18 +11,10 @@ def is_number(s):
  
 class Configuration(object):
   def __init__(self):
-    self.toto = {'initial': 'green',
-                     'events': [
-                         {'name': 'up',    'src': 'green', 'dst': 'green'},
-                         {'name': 'down',  'src': 'green', 'dst': 'green'},
-                         {'name': 'left',  'src': 'green', 'dst': 'green'},
-                         {'name': 'right', 'src': 'green', 'dst': 'green'},
-                         {'name': 'enter', 'src': 'green', 'dst': 'green'}],
-                }
+    pass
 
   def load(self, filename):
-    self.result = {}
-    pp = pprint.PrettyPrinter(indent=4)
+    self.data = {}
     with open(filename, 'r') as f:
       for line in f:
         line = line.replace('\n','')
@@ -30,7 +22,7 @@ class Configuration(object):
         (key, value) = line.split('=') 
         leaves = key.split('.')
         prevleaf = None
-        tree=self.result
+        tree=self.data
         for currentleaf in leaves:
           if prevleaf == None:
             prevleaf = currentleaf
@@ -53,8 +45,6 @@ class Configuration(object):
                 tree[prevleaf]={}
               except:
                 tree.append({})
-          #print "prevleaf=%s currentleaf=%s" % ( prevleaf, currentleaf)
-          #pp.pprint(tree)
           tree=tree[prevleaf]
           prevleaf = currentleaf
         
@@ -63,15 +53,15 @@ class Configuration(object):
           tree.append(value)
         else:
           tree[currentleaf] = value
-        
-    pp.pprint(self.result)
-          
-
-
 
 if __name__ == "__main__":
   configuration = Configuration()
   configuration.load('../rpimonitorlcd.conf')
-  #pp = pprint.PrettyPrinter(indent=4)
-  #pp.pprint(configuration.toto)
-
+  pp = pprint.PrettyPrinter(indent=4)
+  print "=== configuration.data ==="
+  pp.pprint(configuration.data)
+  print "=== configuration.data['fsm']['initial'] ==="
+  pp.pprint(configuration.data['fsm']['initial'])
+  print "=== configuration.data['fsm']['events'] ==="
+  pp.pprint(configuration.data['fsm']['events'])
+  
