@@ -4,8 +4,10 @@
 # sudo pip install fysom
 #
 from fysom import Fysom
-import wiringpi2 as wiringpi
-import pcd8544.lcd as lcd
+#import wiringpi2 as wiringpi
+import lib.fakelib as wiringpi
+#import pcd8544.lcd as lcd
+import lib.fakelib as lcd
 from lib.daemon import Daemon
 from lib.configuration import Configuration
 import os, sys, signal
@@ -36,6 +38,8 @@ class RpiMonitorLCD(Daemon):
     # Get configuration from file
     configuration = Configuration()
     configuration.load('/home/xberger/devel/RPi-Monitor-LCD/rpimonitorlcd.conf')
+
+    self.modules = map(__import__,configuration.data['modules'])
 
     # Initialize state machine
     fsm = Fysom({'initial': configuration.data['fsm']['initial'],
@@ -70,28 +74,33 @@ class RpiMonitorLCD(Daemon):
   # Implement callbacks
   def onup(self,msg):
     lcd.cls()
-    self.loghtOn()
-    lcd.center_word(3,'key up')
+    self.lightOn()
+    eval(configuration.data[fsm.current]['onup'])
+    lcd.center_text(3,'key up')
 
   def ondown(self,msg):
     lcd.cls()
-    self.loghtOn() 
-    lcd.center_word(3,'key down')
+    self.lightOn() 
+    eval(configuration.data[fsm.current]['ondown'])
+    lcd.center_text(3,'key down')
 
   def onleft(self,msg):
     lcd.cls()
-    self.loghtOn()
-    lcd.center_word(3,'key left')
+    self.lightOn()
+    eval(configuration.data[fsm.current]['onleft'])
+    lcd.center_text(3,'key left')
 
   def onright(self,msg):
     lcd.cls()
-    self.loghtOn()
-    lcd.center_word(3,'key right')
+    self.lightOn()
+    eval(configuration.data[fsm.current]['onright'])
+    lcd.center_text(3,'key right')
 
   def onenter(self,msg):
     lcd.cls()
-    self.loghtOn()
-    lcd.center_word(3,'key enter')
+    self.lightOn()
+    lcd.center_text(3,'key enter')
+
 
   def run(self):
     self.initialize()
@@ -116,14 +125,14 @@ if __name__ == "__main__":
     daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid','/dev/stdin','/dev/stdout','/dev/stderr')
     #daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid')
     if 'start' == sys.argv[1]:
-        daemon.start()
+      daemon.start()
     elif 'stop' == sys.argv[1]:
-        daemon.stop()
+      daemon.stop()
     elif 'restart' == sys.argv[1]:
-        daemon.restart()
+      daemon.restart()
     else:
-        print "Unknown command"
-        sys.exit(2)
+      print "Unknown command"
+      sys.exit(2)
     sys.exit(0)
   else:
     print "usage: %s start|stop|restart" % sys.argv[0]

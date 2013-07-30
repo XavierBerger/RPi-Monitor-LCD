@@ -58,10 +58,14 @@ if __name__ == "__main__":
   configuration = Configuration()
   configuration.load('../rpimonitorlcd.conf')
   pp = pprint.PrettyPrinter(indent=4)
+  #print "=== configuration.data['pages'] ==="
+  #pp.pprint(configuration.data['pages'])
+  #print "=== configuration.data['fsm']['initial'] ==="
+  #pp.pprint(configuration.data['fsm']['initial'])
+  #print "=== configuration.data['fsm']['events'] ==="
+  #pp.pprint(configuration.data['fsm']['events'])
+  #print "=== configuration.data['modules'] ==="
+  #pp.pprint(configuration.data['modules'])
   print "=== configuration.data ==="
   pp.pprint(configuration.data)
-  print "=== configuration.data['fsm']['initial'] ==="
-  pp.pprint(configuration.data['fsm']['initial'])
-  print "=== configuration.data['fsm']['events'] ==="
-  pp.pprint(configuration.data['fsm']['events'])
-  
+ 
