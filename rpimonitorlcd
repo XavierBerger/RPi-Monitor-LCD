@@ -4,10 +4,10 @@
 # sudo pip install fysom
 #
 from fysom import Fysom
-#import wiringpi2 as wiringpi
-import lib.fakelib as wiringpi
-#import pcd8544.lcd as lcd
-import lib.fakelib as lcd
+import wiringpi2 as wiringpi
+#import lib.fakelib as wiringpi
+import pcd8544.lcd as lcd
+#import lib.fakelib as lcd
 from lib.daemon import Daemon
 from lib.configuration import Configuration
 import os, sys, signal
@@ -16,13 +16,11 @@ if not os.geteuid() == 0:
     sys.exit('Script must be run as root')
 
 # Define constants
-INPUT, OUTPUT = [0, 1]
-LOW, HIGH = [0, 1]
-ON, OFF = [1, 0]
-BUTTONS = [0,1,2,3,4]
-PUD_UP = 2
+INPUT, OUTPUT = LOW, HIGH = OFF, ON = [0, 1]
+UP, DOWN, RIGHT,LEFT,ENTER = BUTTONS = [8,9,10,11,12]
 PIN_BASE = 65
 I2C_ADDR = 0x20
+PUD_UP = 2
 
 class RpiMonitorLCD(Daemon):
 
@@ -36,27 +34,32 @@ class RpiMonitorLCD(Daemon):
       wiringpi.pullUpDnControl(PIN_BASE + button,PUD_UP)
 
     # Get configuration from file
-    configuration = Configuration()
-    configuration.load('/home/xberger/devel/RPi-Monitor-LCD/rpimonitorlcd.conf')
+    self.configuration = Configuration()
+    self.configuration.load('/home/pi/RPi-Monitor-LCD/rpimonitorlcd.conf')
 
-    self.modules = map(__import__,configuration.data['modules'])
+    self.modules = map(__import__,self.configuration.data['modules'])
 
     # Initialize state machine
-    fsm = Fysom({'initial': configuration.data['fsm']['initial'],
-                 'events':  configuration.data['fsm']['events'],
+    initial = self.configuration.data['fsm']['initial']
+    fsm = Fysom({'initial': {'state': initial, 'event': 'init', 'defer': True},
+                 'events':  self.configuration.data['fsm']['events'],
                  'callbacks': {
                      'onup':    self.onup,
                      'ondown':  self.ondown,
                      'onleft':  self.onleft,
                      'onright': self.onright,
                      'onenter': self.onenter }})
+    fsm.onchangestate = self.onchangestate 
     self.ACTIONS = [ fsm.up, fsm.down, fsm.left, fsm.right, fsm.enter ]
 
     # Initialize LCD
     lcd.init()
-    lcd.cls()
-    self.seconds = 5
-    self.lightOn()
+    self.lighttimer = 0
+    fsm.init()
+    #for command in configuration.data['pages'][initial]['content']:
+    #  eval(command)
+    #self.seconds = 5
+    #self.lightOn()
     signal.signal(signal.SIGTERM, self.exiting)
  
   #
@@ -72,6 +75,12 @@ class RpiMonitorLCD(Daemon):
 
 
   # Implement callbacks
+  def onchangestate(self,e):
+    for command in self.configuration.data['pages'][e.dst]['content']:
+      eval(command)
+    self.seconds = 5
+    self.lightOn()
+
   def onup(self,msg):
     lcd.cls()
     self.lightOn()
