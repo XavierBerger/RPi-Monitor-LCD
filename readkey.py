@@ -4,11 +4,13 @@ import wiringpi2 as wiringpi
 # Define constants
 INPUT, OUTPUT = LOW, HIGH = OFF, ON = [0, 1]
 BUTTONS = [0,1,2,3,4]
-PIN_BASE = 65
+PIN_BASE = 64
 I2C_ADDR = 0x20
 PUD_UP=2
 
 wiringpi.wiringPiSetup()
+wiringpi.mcp23017Setup(PIN_BASE,I2C_ADDR)
+
 
 for button in BUTTONS:
   wiringpi.pinMode(PIN_BASE + button,INPUT)

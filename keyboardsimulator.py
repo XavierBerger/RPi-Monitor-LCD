@@ -13,9 +13,10 @@ if not os.geteuid() == 0:
 
 # Define constants
 INPUT, OUTPUT = LOW, HIGH = OFF, ON = [0, 1]
-UP, DOWN, RIGHT,LEFT,ENTER = BUTTONS = [8,9,10,11,12]
-PIN_BASE = 65
+UP,DOWN,RIGHT,LEFT,ENTER = BUTTONS = [8,9,10,11,12]
+PIN_BASE = 64
 I2C_ADDR = 0x20
+DELAY = 0.1
 
 def initialize():
   # Initialize wiringpi
@@ -23,36 +24,36 @@ def initialize():
   wiringpi.mcp23017Setup(PIN_BASE, I2C_ADDR)
   for button in BUTTONS:
     wiringpi.pinMode(PIN_BASE + button, OUTPUT)
-    wiringpi.digitalWrite(PIN_BASE + button,OFF)
+    wiringpi.digitalWrite(PIN_BASE + button,ON)
 
 def onup():
-  print "UP"
+  print "UP (%d)" % (PIN_BASE + UP)
   wiringpi.digitalWrite(PIN_BASE + UP,OFF)
-  time.sleep(0.5)
+  time.sleep(DELAY)
   wiringpi.digitalWrite(PIN_BASE + UP,ON)
 
 def ondown():
-  print "DOWN"
+  print "DOWN (%d)" % (PIN_BASE + DOWN)
   wiringpi.digitalWrite(PIN_BASE + DOWN,OFF)
-  time.sleep(0.5)
+  time.sleep(DELAY)
   wiringpi.digitalWrite(PIN_BASE + DOWN,ON)
 
 def onright():
-  print "RIGHT"
+  print "RIGHT (%d)" % (PIN_BASE + RIGHT)
   wiringpi.digitalWrite(PIN_BASE + RIGHT,OFF)
-  time.sleep(0.5)
+  time.sleep(DELAY)
   wiringpi.digitalWrite(PIN_BASE + RIGHT,ON)
 
 def onleft():
-  print "LEFT"
+  print "LEFT (%d)" % (PIN_BASE + LEFT)
   wiringpi.digitalWrite(PIN_BASE + LEFT,OFF)
-  time.sleep(0.5)
+  time.sleep(DELAY)
   wiringpi.digitalWrite(PIN_BASE + LEFT,ON)
 
 def onenter():
-  print "ENTER"
+  print "ENTER (%d)" % (PIN_BASE + ENTER)
   wiringpi.digitalWrite(PIN_BASE + ENTER,OFF)
-  time.sleep(0.5)
+  time.sleep(DELAY)
   wiringpi.digitalWrite(PIN_BASE + ENTER,ON)
 
 def keypressed():
