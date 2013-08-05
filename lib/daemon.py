@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#
+# Source found on the internet
+#
 import sys, os, time, atexit
 from signal import SIGTERM
  

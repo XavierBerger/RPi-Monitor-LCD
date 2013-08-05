@@ -19,11 +19,23 @@ def init():
 def cls():
   print "cls"
   
-def backlight(ON):
-  print "backlight"
+def backlight(value):
+  print "backlight %d " % value
 
 def digitalRead(button):
   pass
   
 def delay(delay):
   pass
+
+def centre_text(raw,text):
+  print "[%d] %s" % (raw,text)
+
+def load_bitmap(bitmap):  
+  print "loadbitmap %s" % bitmap
+
+def gotorc(r,c):
+  print "gotorc"
+
+def text(value):
+  print "text"

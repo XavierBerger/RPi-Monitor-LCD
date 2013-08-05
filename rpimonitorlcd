@@ -1,4 +1,20 @@
 #!/usr/bin/env python
+#
+# Copyright 2013 - Xavier Berger - http://rpi-experiences.blogspot.fr/
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 # -*- coding: utf-8 -*-
 #
 # sudo pip install fysom
@@ -10,17 +26,22 @@ import pcd8544.lcd as lcd
 #import lib.fakelib as lcd
 from lib.daemon import Daemon
 from lib.configuration import Configuration
-import os, sys, signal
+import os, sys, signal, time
+
+import lib.lcdmanager as lcdmanager 
+import lib.customization as customization 
+
 
 if not os.geteuid() == 0:
     sys.exit('Script must be run as root')
 
 # Define constants
 INPUT, OUTPUT = LOW, HIGH = OFF, ON = [0, 1]
-UP, DOWN, RIGHT,LEFT,ENTER = BUTTONS = [8,9,10,11,12]
-PIN_BASE = 65
+UP, DOWN, RIGHT,LEFT,ENTER = BUTTONS = [0,1,2,3,4]
+PIN_BASE = 64
 I2C_ADDR = 0x20
 PUD_UP = 2
+REPEAT = 25
 
 class RpiMonitorLCD(Daemon):
 
@@ -36,31 +57,42 @@ class RpiMonitorLCD(Daemon):
     # Get configuration from file
     self.configuration = Configuration()
     self.configuration.load('/home/pi/RPi-Monitor-LCD/rpimonitorlcd.conf')
-
-    self.modules = map(__import__,self.configuration.data['modules'])
+    #self.configuration.printConfiguration()
+    
+    # TODO: Dynamically load library to allow advanced customization 
 
     # Initialize state machine
     initial = self.configuration.data['fsm']['initial']
-    fsm = Fysom({'initial': {'state': initial, 'event': 'init', 'defer': True},
-                 'events':  self.configuration.data['fsm']['events'],
-                 'callbacks': {
-                     'onup':    self.onup,
-                     'ondown':  self.ondown,
-                     'onleft':  self.onleft,
-                     'onright': self.onright,
-                     'onenter': self.onenter }})
-    fsm.onchangestate = self.onchangestate 
-    self.ACTIONS = [ fsm.up, fsm.down, fsm.left, fsm.right, fsm.enter ]
+    self.fsm = Fysom({'initial': {'state': initial, 'event': 'init', 'defer': True},
+                      'events':  self.configuration.data['fsm']['events'],
+                      'callbacks': {
+                          'onup':    self.onup,
+                          'ondown':  self.ondown,
+                          'onleft':  self.onleft,
+                          'onright': self.onright,
+                          'onenter': self.onenter }})
+    self.fsm.onchangestate = self.onchangestate 
 
     # Initialize LCD
     lcd.init()
     self.lighttimer = 0
-    fsm.init()
-    #for command in configuration.data['pages'][initial]['content']:
+    
+    # Manage signal to handle stop
+    signal.signal(signal.SIGTERM, self.exiting)
+    
+    # Start the state machine
+    self.fsm.init()
+    self.ACTIONS = [ self.fsm.up, self.fsm.down, self.fsm.left, self.fsm.right, self.fsm.enter ]
+    
+    #for index in range( len(self.ACTIONS) ):
+    #  print "ACTIONS[%d]" % index
+    #  self.ACTIONS[index]() 
+    #  time.sleep(1)
+
+    #for command in self.configuration.data['pages'][initial]['content']:
     #  eval(command)
     #self.seconds = 5
     #self.lightOn()
-    signal.signal(signal.SIGTERM, self.exiting)
  
   #
   def lightOn(self):
@@ -76,52 +108,70 @@ class RpiMonitorLCD(Daemon):
 
   # Implement callbacks
   def onchangestate(self,e):
-    for command in self.configuration.data['pages'][e.dst]['content']:
-      eval(command)
+    #print "STATE CHANGE TO %s" % e.dst
     self.seconds = 5
     self.lightOn()
+    if e.dst=='action':
+      backto="self.fsm.backto%s()" % e.src
+      eval(backto)
+    else:
+      for command in self.configuration.data['pages'][e.dst]['content']:
+        eval(command)
+
 
   def onup(self,msg):
+    #print "ONUP"
     lcd.cls()
     self.lightOn()
-    eval(configuration.data[fsm.current]['onup'])
-    lcd.center_text(3,'key up')
+    lcd.centre_text(3,'key up')
+    eval(self.configuration.data['fsm'][self.fsm.current]['onup'])
 
   def ondown(self,msg):
+    #print "ONDOWN"
     lcd.cls()
     self.lightOn() 
-    eval(configuration.data[fsm.current]['ondown'])
-    lcd.center_text(3,'key down')
+    lcd.centre_text(3,'key down')
+    eval(self.configuration.data['fsm'][self.fsm.current]['ondown'])
 
   def onleft(self,msg):
+    #print "ONLEFT"
     lcd.cls()
     self.lightOn()
-    eval(configuration.data[fsm.current]['onleft'])
-    lcd.center_text(3,'key left')
+    lcd.centre_text(3,'key left')
+    eval(self.configuration.data['fsm'][self.fsm.current]['onleft'])
 
   def onright(self,msg):
+    #print "ONRIGHT"
     lcd.cls()
     self.lightOn()
-    eval(configuration.data[fsm.current]['onright'])
-    lcd.center_text(3,'key right')
+    lcd.centre_text(3,'key right')
+    eval(self.configuration.data['fsm'][self.fsm.current]['onright'])
 
   def onenter(self,msg):
+    #print "ONENTER"
     lcd.cls()
     self.lightOn()
-    lcd.center_text(3,'key enter')
+    lcd.centre_text(3,'key enter')
+    eval(self.configuration.data['fsm'][self.sm.current]['onenter'])
 
 
   def run(self):
     self.initialize()
+    
     # Start main loop
+    previous_state=[REPEAT,REPEAT,REPEAT,REPEAT,REPEAT]
     while True:
       for index,button in enumerate(BUTTONS):
-        button_state = wiringpi.digitalRead(button)
-        if button_state:
-          try:
-            self.ACTIONS[index];
-          finally:
-            pass
+        button_state = wiringpi.digitalRead(PIN_BASE + button)
+        if button_state == OFF:
+          if previous_state[index] ==0:
+            try:
+              previous_state[index] -= 1
+              self.ACTIONS[index]();
+            finally:
+              pass
+        else:
+          previous_state[index] = REPEAT
       if self.lighttimer > 0:
         self.lighttimer -= 1
         if self.lighttimer == 0:
@@ -131,8 +181,7 @@ class RpiMonitorLCD(Daemon):
 
 if __name__ == "__main__":
   if len(sys.argv) == 2:
-    daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid','/dev/stdin','/dev/stdout','/dev/stderr')
-    #daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid')
+    daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid')
     if 'start' == sys.argv[1]:
       daemon.start()
     elif 'stop' == sys.argv[1]:
@@ -145,4 +194,13 @@ if __name__ == "__main__":
     sys.exit(0)
   else:
     print "usage: %s start|stop|restart" % sys.argv[0]
+    try:
+      print "DEBUG: Running in console mode"
+      daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid','/dev/stdin','/dev/stdout','/dev/stderr')
+      daemon.run()
+    except KeyboardInterrupt:
+      pass
+    finally:
+      lcd.cls()
+      lcd.backlight(OFF)
     sys.exit(2)
