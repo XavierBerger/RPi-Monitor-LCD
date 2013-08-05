@@ -115,8 +115,9 @@ class RpiMonitorLCD(Daemon):
       backto="self.fsm.backto%s()" % e.src
       eval(backto)
     else:
-      for command in self.configuration.data['pages'][e.dst]['content']:
-        eval(command)
+      if e.event.find("backto") == -1:
+        for command in self.configuration.data['pages'][e.dst]['content']:
+          eval(command)
 
 
   def onup(self,msg):
@@ -164,7 +165,7 @@ class RpiMonitorLCD(Daemon):
       for index,button in enumerate(BUTTONS):
         button_state = wiringpi.digitalRead(PIN_BASE + button)
         if button_state == OFF:
-          if previous_state[index] ==0:
+          if previous_state[index] == REPEAT:
             try:
               previous_state[index] -= 1
               self.ACTIONS[index]();
