@@ -20,38 +20,38 @@
 # This module is a skeleton that can be used to customize RPi-Monitor-LCD 
 #
 ###########################################################################
-#import pcd8544.lcd as lcd
-import fakelib as lcd
+import pcd8544.lcd as lcd
+#import fakelib as lcd
 
 class Singleton(object):
   class __Singleton:
 
     def __init__(self):
-      self.aValue = "a value"
+      pass
 
-    def onup(self,caller):
+    def onup(self):
       lcd.cls()
-      caller.lightOn()
+      lcd.centre_text(0,'RPi-Mnitor')
       lcd.centre_text(3,'key up')
 
-    def ondown(self,caller):
+    def ondown(self):
       lcd.cls()
-      caller.lightOn()
+      lcd.centre_text(0,'RPi-Mnitor')
       lcd.centre_text(3,'key down')
 
-    def onleft(self,caller):
+    def onleft(self):
       lcd.cls()
-      caller.lightOn()
+      lcd.centre_text(0,'RPi-Mnitor')
       lcd.centre_text(3,'key left')
 
-    def onright(self,caller):
+    def onright(self):
       lcd.cls()
-      caller.lightOn()
+      lcd.centre_text(0,'RPi-Mnitor')
       lcd.centre_text(3,'key right')
 
-    def onenter(self,caller):
+    def onenter(self):
       lcd.cls()
-      caller.lightOn()
+      lcd.centre_text(0,'RPi-Mnitor')
       lcd.centre_text(3,'key enter')
 
   instance = None
@@ -61,25 +61,25 @@ class Singleton(object):
       Singleton.instance = Singleton.__Singleton()
     return Singleton.instance
 
-def onup(caller):
+def onup():
   singleton = Singleton()
-  return singleton.onup(caller)
+  return singleton.onup()
 
-def ondown(caller):
+def ondown():
   singleton = Singleton()
-  return singleton.ondown(caller)
+  return singleton.ondown()
 
-def onleft(caller):
+def onleft():
   singleton = Singleton()
-  return singleton.onleft(caller)
+  return singleton.onleft()
 
-def onright(caller):
+def onright():
   singleton = Singleton()
-  return singleton.onright(caller)
+  return singleton.onright()
 
-def onenter(caller):
+def onenter():
   singleton = Singleton()
-  return singleton.onenter(caller)
+  return singleton.onenter()
 
   
 if __name__ == '__main__':

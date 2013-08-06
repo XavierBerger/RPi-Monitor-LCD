@@ -32,7 +32,6 @@ class Singleton(object):
    
     def getData(self):
       if (time.time() - self.lastUpdate ) >  10:
-        print "********** Get data from server **********"
         connection = httplib.HTTPConnection("localhost", 8888)
         connection.request("GET","/dynamic.json")
         response = connection.getresponse()

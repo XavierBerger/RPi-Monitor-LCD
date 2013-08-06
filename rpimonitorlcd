@@ -19,11 +19,11 @@
 #
 # sudo pip install fysom
 #
-from fysom import Fysom
+from fysom import Fysom, FysomError
 import wiringpi2 as wiringpi
 #import lib.fakelib as wiringpi
-#import pcd8544.lcd as lcd
-import lib.fakelib as lcd
+import pcd8544.lcd as lcd
+#import lib.fakelib as lcd
 from lib.daemon import Daemon
 from lib.configuration import Configuration
 import os, sys, signal, time
@@ -62,7 +62,6 @@ class RpiMonitorLCD(Daemon):
     # Get configuration from file
     self.configuration = Configuration()
     self.configuration.load('/home/pi/RPi-Monitor-LCD/rpimonitorlcd.conf')
-    self.configuration.printConfiguration()
     
     # TODO: Dynamically load library to allow advanced customization 
 
@@ -86,8 +85,6 @@ class RpiMonitorLCD(Daemon):
     signal.signal(signal.SIGTERM, self.exiting)
     
     # Start the state machine
-    self.seconds = 5
-    self.lightOn()
     self.fsm.init()
     self.ACTIONS = [ self.fsm.up, self.fsm.down, self.fsm.right, self.fsm.left, self.fsm.enter ]
     
@@ -107,6 +104,7 @@ class RpiMonitorLCD(Daemon):
   # Implement state chenge event
   def onchangestate(self,e):
     self.seconds = 5
+    self.lightOn()
     if e.dst=='action':
       backto="self.fsm.backto%s()" % e.src
       eval(backto)
@@ -163,7 +161,7 @@ class RpiMonitorLCD(Daemon):
             try:
               previous_state[index] -= 1
               self.ACTIONS[index]();
-            except:
+            except FysomError:
               pass
         else:
           previous_state[index] = self.repeat
