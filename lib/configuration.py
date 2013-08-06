@@ -80,7 +80,7 @@ class Configuration(object):
         self.data['fsm']['events'].append( { 'name':name, 'src':'action', 'dst':dst  } )
 
   def printConfiguration(self):
-    pp = pprint.PrettyPrinter(indent=4)
+    pp = pprint.PrettyPrinter(indent=2)
     #print "=== configuration.data['pages'] ==="
     #pp.pprint(self.data['pages'])
     #print "=== configuration.data['fsm']['initial'] ==="

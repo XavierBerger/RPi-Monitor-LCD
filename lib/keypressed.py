@@ -20,6 +20,8 @@
 # This module is a skeleton that can be used to customize RPi-Monitor-LCD 
 #
 ###########################################################################
+#import pcd8544.lcd as lcd
+import fakelib as lcd
 
 class Singleton(object):
   class __Singleton:
@@ -27,9 +29,30 @@ class Singleton(object):
     def __init__(self):
       self.aValue = "a value"
 
-    def aFunction(self):
-      # Implement a function here and return a value
-      return self.aValue
+    def onup(self,caller):
+      lcd.cls()
+      caller.lightOn()
+      lcd.centre_text(3,'key up')
+
+    def ondown(self,caller):
+      lcd.cls()
+      caller.lightOn()
+      lcd.centre_text(3,'key down')
+
+    def onleft(self,caller):
+      lcd.cls()
+      caller.lightOn()
+      lcd.centre_text(3,'key left')
+
+    def onright(self,caller):
+      lcd.cls()
+      caller.lightOn()
+      lcd.centre_text(3,'key right')
+
+    def onenter(self,caller):
+      lcd.cls()
+      caller.lightOn()
+      lcd.centre_text(3,'key enter')
 
   instance = None
 
@@ -38,12 +61,26 @@ class Singleton(object):
       Singleton.instance = Singleton.__Singleton()
     return Singleton.instance
 
-# Define the function callable by the state machine
-def aFunction():
-  # Get Singleton
+def onup(caller):
   singleton = Singleton()
-  # Execute the associated funtion and return its result
-  return singleton.aFunction()
+  return singleton.onup(caller)
+
+def ondown(caller):
+  singleton = Singleton()
+  return singleton.ondown(caller)
+
+def onleft(caller):
+  singleton = Singleton()
+  return singleton.onleft(caller)
+
+def onright(caller):
+  singleton = Singleton()
+  return singleton.onright(caller)
+
+def onenter(caller):
+  singleton = Singleton()
+  return singleton.onenter(caller)
+
   
 if __name__ == '__main__':
   aResult = aFunction()

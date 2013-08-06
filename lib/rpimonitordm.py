@@ -15,22 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+#########################################################################
+#
 # rpimonitordm (RPi-Monitor Data Miner) is a plugin for RPi-Monitor-LCD
 # designed to extract and make available current data from RPi-Monitor.
 # To decrease server load, rpimonitordm will only query the server is
 # cached data are too old.
 #
-import time, httplib, json
+import time, httplib, json, pprint
 
-class RPM(object):
+class Singleton(object):
   class __Singleton:
 
     def __init__(self):
-      self.val = None
       self.lastUpdate = 0
-
-    def __str__(self):
-      return `self` + self.val
    
     def getData(self):
       if (time.time() - self.lastUpdate ) >  10:
@@ -47,15 +45,18 @@ class RPM(object):
   instance = None
 
   def __new__(c):
-    if not RPM.instance:
-      RPM.instance = RPM.__Singleton()
-    return RPM.instance
+    if not Singleton.instance:
+      Singleton.instance = Singleton.__Singleton()
+    return Singleton.instance
 
 def getData():
-  rpm = RPM()
-  return rpm.getData()
+  singleton = Singleton()
+  return singleton.getData()
   
 if __name__ == '__main__':
+  data = getData()
+  pp = pprint.PrettyPrinter(indent=4)
+  pp.pprint(data)
   while True:
     data = getData()
     print data['uptime']

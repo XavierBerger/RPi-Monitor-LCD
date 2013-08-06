@@ -39,3 +39,9 @@ def gotorc(r,c):
 
 def text(value):
   print "text"
+
+def led(value):
+  print "led"
+
+def set_contrast(value):
+  print "set_contrast"
