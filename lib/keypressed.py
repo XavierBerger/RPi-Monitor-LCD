@@ -20,8 +20,8 @@
 # This module is a skeleton that can be used to customize RPi-Monitor-LCD 
 #
 ###########################################################################
-import pcd8544.lcd as lcd
-#import fakelib as lcd
+#import pcd8544.lcd as lcd
+import fakelib as lcd
 
 class Singleton(object):
   class __Singleton:

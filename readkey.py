@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
 import wiringpi2 as wiringpi
-import pcd8544.lcd as lcd
 
 # Define constants
 INPUT, OUTPUT = LOW, HIGH = OFF, ON = [0, 1]
@@ -26,16 +24,15 @@ PIN_BASE = 64
 I2C_ADDR = 0x20
 PUD_UP=2
 
+# Initialize wiringpi to use mcp23017 GPIO expansion chip
 wiringpi.wiringPiSetup()
 wiringpi.mcp23017Setup(PIN_BASE,I2C_ADDR)
-
 
 for button in BUTTONS:
   wiringpi.pinMode(PIN_BASE + button,INPUT)
   wiringpi.pullUpDnControl(PIN_BASE + button,PUD_UP)
 
-lcd.init()
-
+# Main loop to capture button
 try:
   while 1:
     for index,button in enumerate(BUTTONS):

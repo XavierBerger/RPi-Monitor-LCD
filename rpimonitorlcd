@@ -22,8 +22,8 @@
 from fysom import Fysom, FysomError
 import wiringpi2 as wiringpi
 #import lib.fakelib as wiringpi
-import pcd8544.lcd as lcd
-#import lib.fakelib as lcd
+#import pcd8544.lcd as lcd
+import lib.fakelib as lcd
 from lib.daemon import Daemon
 from lib.configuration import Configuration
 import os, sys, signal, time
@@ -49,6 +49,9 @@ class RpiMonitorLCD(Daemon):
 
   def initialize(self):
 
+    # Define default values
+    self.refreshtimer=-1
+
     # Initialize wiringpi
     wiringpi.wiringPiSetup()
     wiringpi.mcp23017Setup(PIN_BASE,I2C_ADDR)
@@ -56,25 +59,28 @@ class RpiMonitorLCD(Daemon):
       wiringpi.pinMode(PIN_BASE + button,INPUT)
       wiringpi.pullUpDnControl(PIN_BASE + button,PUD_UP)
 
-    # Define key repeat frequency
-    self.repeat = 25
-
     # Get configuration from file
     self.configuration = Configuration()
     self.configuration.load('/home/pi/RPi-Monitor-LCD/rpimonitorlcd.conf')
     
+    # Define interface behavior
+    # TODO: Getvalue from configuration file
+    self.repeat  = 25 # Define key repeat frequency
+    self.seconds = 5  # Define light timeout
+
     # TODO: Dynamically load library to allow advanced customization 
 
     # Initialize state machine
     initial = self.configuration.data['fsm']['initial']
-    self.fsm = Fysom({'initial': {'state': initial, 'event': 'init', 'defer': True},
+    self.fsm = Fysom({'initial': { 'state': initial, 'event': 'init', 'defer': True },
                       'events':  self.configuration.data['fsm']['events'],
-                      'callbacks': {
-                          'onup':    self.onup,
-                          'ondown':  self.ondown,
-                          'onleft':  self.onleft,
-                          'onright': self.onright,
-                          'onenter': self.onenter }})
+                      'callbacks': { 'onup':      self.onup,
+                                     'ondown':    self.ondown,
+                                     'onleft':    self.onleft,
+                                     'onright':   self.onright,
+                                     'onenter':   self.onenter
+                                   }
+                     })
     self.fsm.onchangestate = self.onchangestate 
 
     # Initialize LCD
@@ -100,52 +106,62 @@ class RpiMonitorLCD(Daemon):
     lcd.backlight(OFF)
     sys.exit(0)
 
-
-  # Implement state chenge event
+  # Implement state change event
   def onchangestate(self,e):
-    self.seconds = 5
-    self.lightOn()
-    if e.dst=='action':
+    #print "STATECHANGE %s -> %s (%s)" % (e.src, e.dst, e.event)
+    if ( e.dst=='action' ) or ( e.dst=='refresh' ) :
       backto="self.fsm.backto%s()" % e.src
       eval(backto)
     else:
-      if e.event.find("backto") == -1:
+      #print "STATECHANGE ELSE  %s -> %s (%s)" % (e.src, e.dst, e.event)
+      if ( e.src != 'refresh' ) and ( e.dst != 'refresh' ):
+        self.lightOn()
+      if ( e.event.find("backto") == -1) or (e.src == 'refresh') :
         for command in self.configuration.data['pages'][e.dst]['content']:
           try:
             eval(command)
           except KeyError:
             pass
+        try:
+          self.refreshtimer=int(self.configuration.data['pages'][e.dst]['autorefresh'])*50
+        except KeyError:
+          self.refreshtimer=-1
 
   # Implement callbacks
-  def onup(self,msg):
-    try:
-      eval(self.configuration.data['fsm'][self.fsm.current]['onup'])
-    except KeyError:
-      pass
+  def onup(self,e):
+    if e.src == self.fsm.current:
+      try:
+        eval(self.configuration.data['fsm'][self.fsm.current]['onup'])
+      except KeyError:
+        pass
 
-  def ondown(self,msg):
-    try:
-      eval(self.configuration.data['fsm'][self.fsm.current]['ondown'])
-    except KeyError:
-      pass
+  def ondown(self,e):
+    if e.src == self.fsm.current:
+      try:
+        eval(self.configuration.data['fsm'][self.fsm.current]['ondown'])
+      except KeyError:
+        pass
 
-  def onleft(self,msg):
-    try:
-      eval(self.configuration.data['fsm'][self.fsm.current]['onleft'])
-    except KeyError:
-      pass
+  def onleft(self,e):
+    if e.src == self.fsm.current:
+      try:
+        eval(self.configuration.data['fsm'][self.fsm.current]['onleft'])
+      except KeyError:
+        pass
 
-  def onright(self,msg):
-    try:
-      eval(self.configuration.data['fsm'][self.fsm.current]['onright'])
-    except KeyError:
-      pass
+  def onright(self,e):
+    if e.src == self.fsm.current:
+      try:
+        eval(self.configuration.data['fsm'][self.fsm.current]['onright'])
+      except KeyError:
+        pass
 
-  def onenter(self,msg):
-    try:
-      eval(self.configuration.data['fsm'][self.fsm.current]['onenter'])
-    except KeyError:
-      pass
+  def onenter(self,e):
+    if e.src == self.fsm.current:
+      try:
+        eval(self.configuration.data['fsm'][self.fsm.current]['onenter'])
+      except KeyError:
+        pass
 
 
   def run(self):
@@ -170,6 +186,13 @@ class RpiMonitorLCD(Daemon):
         self.lighttimer -= 1
         if self.lighttimer == 0:
           lcd.backlight(OFF)
+      # Manage refresh
+      if self.refreshtimer > 0:
+        self.refreshtimer -= 1
+        if self.refreshtimer == 0:
+          self.refreshtimer -= 1
+          self.fsm.refresh()
+
       wiringpi.delay(20)
 
 

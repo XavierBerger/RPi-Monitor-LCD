@@ -77,10 +77,22 @@ class Configuration(object):
       if event['dst'] == 'action':
          backtolist[event['src']]="backto%s"% event['src']
     for dst,name in backtolist.items():
-        self.data['fsm']['events'].append( { 'name':name, 'src':'action', 'dst':dst  } )
+      self.data['fsm']['events'].append( { 'name':name, 'src':'action', 'dst':dst  } )
+
+    #Process autorefresh parameter
+    autorefresh=[]
+    for name,desc in self.data['pages'].items():
+      try:
+        autorefresh.append(name)
+      except:
+        pass
+    for name in autorefresh:
+      self.data['fsm']['events'].append( { 'name':'refresh', 'src':name, 'dst':'refresh'  } )
+      self.data['fsm']['events'].append( { 'name':"backto%s" % name, 'src':'refresh', 'dst':name  } )
+      
 
   def printConfiguration(self):
-    pp = pprint.PrettyPrinter(indent=2)
+    pp = pprint.PrettyPrinter(indent=2,width=100)
     #print "=== configuration.data['pages'] ==="
     #pp.pprint(self.data['pages'])
     #print "=== configuration.data['fsm']['initial'] ==="
@@ -94,5 +106,5 @@ class Configuration(object):
 
 if __name__ == "__main__":
   configuration = Configuration()
-  configuration.load('../rpimonitorlcd.conf')
+  configuration.load('./rpimonitorlcd.conf')
   configuration.printConfiguration()
