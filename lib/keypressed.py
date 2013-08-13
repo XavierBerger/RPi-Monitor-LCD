@@ -31,7 +31,7 @@ class Singleton(object):
 
     def onup(self):
       lcd.cls()
-      lcd.centre_text(0,'RPi-Mnitor')
+      lcd.centre_text(0,'RPi-Monitor')
       lcd.centre_text(3,'key up')
 
     def ondown(self):

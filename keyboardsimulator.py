@@ -90,6 +90,7 @@ def keypressed():
         c = sys.stdin.read(1)
         combo.pop(0)
         combo.append(c)
+        #print c
         if combo[2] == '\n': onenter()
         if (combo[0] == '\x1b') and (combo[1] == '['):
           if combo[2] == 'A': onup()

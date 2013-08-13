@@ -35,13 +35,13 @@ def load_bitmap(bitmap):
   print "loadbitmap %s" % bitmap
 
 def gotorc(r,c):
-  print "gotorc"
+  print "gotorc (%d,%d)" % ( r, c )
 
 def text(value):
   print "text"
 
-def led(value):
-  print "led"
+def set_brightness(value):
+  print "led: %d" % value
 
 def set_contrast(value):
-  print "set_contrast"
+  print "set_contrast: %d" % value
