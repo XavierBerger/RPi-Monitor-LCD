@@ -22,7 +22,7 @@
 # To decrease server load, rpimonitordm will only query the server is
 # cached data are too old.
 #
-import time, httplib, json, pprint
+import time, httplib, json, pprint, datetime
 
 class Singleton(object):
   class __Singleton:
@@ -41,6 +41,10 @@ class Singleton(object):
         self.lastUpdate=time.time()
       return self.data
 
+    def uptime(self):
+      data = getData()
+      return str(datetime.timedelta(0,float(data['uptime']))).split('.')[0]
+
   instance = None
 
   def __new__(c):
@@ -51,6 +55,10 @@ class Singleton(object):
 def getData():
   singleton = Singleton()
   return singleton.getData()
+  
+def uptime():
+  singleton = Singleton()
+  return singleton.uptime()
   
 if __name__ == '__main__':
   data = getData()

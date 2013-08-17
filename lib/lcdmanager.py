@@ -20,8 +20,8 @@
 # 
 #
 ###########################################################################
-#import pcd8544.lcd as lcd
-import fakelib as lcd
+import pcd8544.lcd as lcd
+#import fakelib as lcd
 
 class Singleton(object):
   class __Singleton:

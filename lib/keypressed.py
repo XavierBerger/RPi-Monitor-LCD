@@ -20,8 +20,8 @@
 # This module is a skeleton that can be used to customize RPi-Monitor-LCD 
 #
 ###########################################################################
-#import pcd8544.lcd as lcd
-import fakelib as lcd
+import pcd8544.lcd as lcd
+#import fakelib as lcd
 
 class Singleton(object):
   class __Singleton:
@@ -36,22 +36,22 @@ class Singleton(object):
 
     def ondown(self):
       lcd.cls()
-      lcd.centre_text(0,'RPi-Mnitor')
+      lcd.centre_text(0,'RPi-Monitor')
       lcd.centre_text(3,'key down')
 
     def onleft(self):
       lcd.cls()
-      lcd.centre_text(0,'RPi-Mnitor')
+      lcd.centre_text(0,'RPi-Monitor')
       lcd.centre_text(3,'key left')
 
     def onright(self):
       lcd.cls()
-      lcd.centre_text(0,'RPi-Mnitor')
+      lcd.centre_text(0,'RPi-Monitor')
       lcd.centre_text(3,'key right')
 
     def onenter(self):
       lcd.cls()
-      lcd.centre_text(0,'RPi-Mnitor')
+      lcd.centre_text(0,'RPi-Monitor')
       lcd.centre_text(3,'key enter')
 
   instance = None

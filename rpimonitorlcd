@@ -22,8 +22,8 @@
 from fysom import Fysom, FysomError
 import wiringpi2 as wiringpi
 #import lib.fakelib as wiringpi
-#import pcd8544.lcd as lcd
-import lib.fakelib as lcd
+import pcd8544.lcd as lcd
+#import lib.fakelib as lcd
 from lib.daemon import Daemon
 from lib.configuration import Configuration
 import os, sys, signal, time
@@ -33,7 +33,7 @@ import lib.lcdmanager as lcdmanager
 import lib.keypressed as keypressed
 import lib.rpimonitordm as rpimonitordm
 import lib.customization as customization 
-# NOTE: Before dynamic module loading, add new modules here
+# NOTE: Before dynamic module loading is implemented, add new modules here
 
 if not os.geteuid() == 0:
     sys.exit('Script must be run as root')
