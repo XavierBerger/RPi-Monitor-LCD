@@ -31,11 +31,11 @@ class Singleton(object):
       self.brightness = 256
 
     def lightup(self):
-      self.brightness +=10
+      self.brightness +=16
       lcd.set_brightness(self.brightness)
       
     def lightdown(self):
-      self.brightness -=10
+      self.brightness -=16
       lcd.set_brightness(self.brightness)
       
     def contrastup(self):
