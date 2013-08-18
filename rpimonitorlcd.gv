@@ -4,7 +4,7 @@ digraph finite_state_machine {
   node [shape = doublecircle]; logo;
   node [shape = circle];
   
-        logo -> action [ label = "any key but enter\nDoAction(key)"]
+        logo -> action [ label = "Any key but enter\nDoAction(key)\nContrast/Light adjustment"]
         action -> logo [ label = "backtologo" ]
         logo -> uptime [ label = "enter"]
 

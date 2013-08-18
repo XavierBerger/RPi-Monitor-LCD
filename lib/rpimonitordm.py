@@ -56,6 +56,10 @@ class Singleton(object):
       data = getData()
       return "%.2f%%" % (data["%s_used" % diskname]/data["%s_total" % diskname]*100)
 
+    def memory(self):
+      data = getData()
+      return "%.2f%%" % ((data["memory_total"] - data["memory_free"])/data["memory_total"]*100)
+
   instance = None
 
   def __new__(c):
@@ -74,6 +78,11 @@ def uptime():
 def disk(diskname):
   singleton = Singleton()
   return singleton.disk(diskname)
+
+def memory():
+  singleton = Singleton()
+  return singleton.memory()
+
 
 if __name__ == '__main__':
   data = getData()
