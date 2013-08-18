@@ -1,23 +1,30 @@
 digraph finite_state_machine {
-	rankdir=LR;
-	size="8,5"
-	node [shape = doublecircle]; logo;
-	node [shape = circle];
-	
+  rankdir=LR;
+  size="8,5"
+  node [shape = doublecircle]; logo;
+  node [shape = circle];
+  
         logo -> action [ label = "any key but enter\nDoAction(key)"]
         action -> logo [ label = "backtologo" ]
-	logo -> load [ label = "enter"]
+        logo -> uptime [ label = "enter"]
 
-        load -> logo [ label = "left" ]
-        load -> temp [ label = "right" ]
+        uptime -> logo [ label = "left" ]
+        uptime -> disk [ label = "right" ]
+        uptime -> disk [ label = "enter" ]
+
+        disk -> uptime [ label = "left" ]
+        disk -> load [ label = "right" ]
+        disk -> load [ label = "enter" ]
+
+        load -> disk [ label = "left" ]
+        load -> mem [ label = "right" ]
+        load -> mem [ label = "enter" ]
         
-        temp -> load [ label = "left" ]
-        temp -> disk [ label = "right" ]
-     
-        disk -> temp [ label = "left" ]
-        disk -> mem [ label = "right" ]
+        mem -> load [ label = "left" ]
+        mem -> temp [ label = "right" ]
+        mem -> temp [ label = "enter" ]
 
-        mem -> disk [ label = "left" ]
-        mem -> logo [ label = "right" ]
+        temp -> mem [ label = "left" ]
+     
    
 }

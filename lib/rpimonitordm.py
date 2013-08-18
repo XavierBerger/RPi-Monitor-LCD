@@ -54,7 +54,7 @@ class Singleton(object):
 
     def disk(self, diskname):
       data = getData()
-      return "%d%%" % (data["%s_used" % diskname]/data["%s_total" % diskname]*100)
+      return "%.2f%%" % (data["%s_used" % diskname]/data["%s_total" % diskname]*100)
 
   instance = None
 

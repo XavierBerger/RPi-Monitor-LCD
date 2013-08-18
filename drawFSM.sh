@@ -1,4 +1,4 @@
 #!/bin/bash
-dot -Tpng fsm.gv -o fsm.png
-qiv fsm.png
+dot -Tpng rpimonitorlcd.gv -o rpimonitorlcd.png
+qiv rpimonitorlcd.png
 
