@@ -29,6 +29,12 @@ class Singleton(object):
 
     def __init__(self):
       self.lastUpdate = 0
+      connection = httplib.HTTPConnection("localhost", 8888)
+      connection.request("GET","/static.json")
+      response = connection.getresponse()
+      if ( response.status == 200 ):
+        self.static = json.loads(response.read())
+      connection.close()
    
     def getData(self):
       if (time.time() - self.lastUpdate ) >  10:
@@ -39,11 +45,16 @@ class Singleton(object):
           self.data = json.loads(response.read())
         connection.close()
         self.lastUpdate=time.time()
+        self.data.update(self.static)
       return self.data
 
     def uptime(self):
       data = getData()
       return str(datetime.timedelta(0,float(data['uptime']))).split('.')[0]
+
+    def disk(self, diskname):
+      data = getData()
+      return "%d%%" % (data["%s_used" % diskname]/data["%s_total" % diskname]*100)
 
   instance = None
 
@@ -60,10 +71,17 @@ def uptime():
   singleton = Singleton()
   return singleton.uptime()
   
+def disk(diskname):
+  singleton = Singleton()
+  return singleton.disk(diskname)
+
 if __name__ == '__main__':
   data = getData()
   pp = pprint.PrettyPrinter(indent=4)
   pp.pprint(data)
+  uptime()
+  print disk("sdcard_boot")
+  print disk("sdcard_root")
   while True:
     data = getData()
     print data['uptime']
