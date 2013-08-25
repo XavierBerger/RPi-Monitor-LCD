@@ -1,6 +1,6 @@
-#RPi-Monitor-LCD
+#[RPi-Monitor-LCD](http://rpi-experiences.blogspot.fr/)
 
-Development still in progress. Repository not ready yet for fork...
+###Development still in progress. Repository not ready yet for fork...
 
 ## Introduction
 **RPi-Monitor-LCD** is designed to display information extracted from [**RPi-Monitor**](https://github.com/XavierBerger/RPi-Monitor) into a [**pcd8544**](https://github.com/XavierBerger/pcd8544) LCD.
@@ -18,25 +18,27 @@ In the [doc](https://github.com/XavierBerger/RPi-Monitor-LCD/tree/master/doc) di
 
 ![bb](https://raw.github.com/XavierBerger/RPi-Monitor-LCD/master/doc/RPi-Monitor-LCD_bb.png)
 
-Note: This electronic assembly comes with additionnal components (DS18B20 temperature sensor and a set of 433MHz components) I plan to use in future projects.
+**Note**: This electronic assembly comes with additionnal components (DS18B20 temperature sensor and a set of 433MHz components) I plan to use in future projects.
 
 ## Installation
 
-Dependencies:
-  * sudo apt-get install python-dev python-imaging python-imaging-tk python-pip
-  * sudo pip install wiringpi2
-  * sudo pip install fysom
-  * sudo pip install spidev
+Install the dependencies with the following commands:
 
-  git clone https://github.com/XavierBerger/pcd8544.git
-  cd pcd8544
-  ./setup clean build
-  sudo ./setup install
+  * `sudo apt-get install python-dev python-imaging python-imaging-tk python-pip`
+  * `sudo pip install wiringpi2`
+  * `sudo pip install fysom`
+  * `sudo pip install spidev`
+  * Install PCD8544 library as follow:
 
-  Remove i2c from blacklist
+```
+git clone https://github.com/XavierBerger/pcd8544.git
+cd pcd8544
+./setup.py clean build 
+sudo ./setup.py install
+```
 
-  Add i2c-dev in /etc/modules
-  
-  Reboot or execute gpio load i2c
+  * Remove `i2c` from blacklist
+  * Add `i2c-dev` in `/etc/modules`
+  * `reboot` or execute `gpio load i2c`
   
   
