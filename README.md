@@ -37,7 +37,7 @@ cd pcd8544
 sudo ./setup.py install
 ```
 
-  * Remove `i2c` from blacklist
+  * Remove `i2c-bcm2708` from `/etc/modprobe.d/raspi-blacklist.conf`
   * Add `i2c-dev` in `/etc/modules`
   * `reboot` or execute `gpio load i2c`
   
