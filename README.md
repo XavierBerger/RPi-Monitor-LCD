@@ -8,7 +8,7 @@
 
 **RPi-Monitor-LCD** is architectured around a finite state machine powered by [fysom](https://github.com/mriehl/fysom). The state machine behavior is highly configurable and stored into a configuration file. The configuration file will call additionnal libraries to perform custom actions.
 
-The project is entended to be a framework easily customizable and not a fully packaged solution. Using **RPi-Monitor-LCD ** will certainly require some customization and adaptation.
+The project is entended to be a framework easily customizable and not a fully packaged solution. Using **RPi-Monitor-LCD** will certainly require some customization and adaptation.
 
 In this repository **RPi-Monitor-LCD** is provided with a working example showing the possibilities offered by finite state machine engine implementation. 
 
