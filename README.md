@@ -41,4 +41,10 @@ sudo ./setup.py install
   * Add `i2c-dev` in `/etc/modules`
   * `reboot` or execute `gpio load i2c`
   
-  
+##Finite State Machine behavior and configuration
+
+### To be wtitten...
+
+##Example
+This repository contains an example of state machine configured as shown in the diagram bellow:
+![fsm](https://raw.github.com/XavierBerger/RPi-Monitor-LCD/master/doc/rpimonitorlcd.png)
