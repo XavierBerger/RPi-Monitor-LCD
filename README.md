@@ -43,7 +43,40 @@ sudo ./setup.py install
   
 ##Finite State Machine behavior and configuration
 
-### To be wtitten...
+Keyboard and backlight configuration
+
+```
+keyboard.repeat=<Number of cycles before concerning key as repeated>
+backlight.delay=<Number of seconds to turn light on when key pressed >
+```
+
+Initial state for the FSM
+
+`fsm.initial=<state name>`
+
+Define the content of a page associated to a state name
+
+`pages.<state name>.content.<line number>=<python command>`
+
+Define event (for a source state, define what is the destination state when a key is pressed)
+```
+fsm.events.<event id>.name=<key name [up|down|left|right|enter]>
+fsm.events.<event id>.src=<state name>
+fsm.events.<event id>.dst=<state name>
+```
+
+On key pressed callback
+```
+fsm.<state name>.onup=<python command>
+fsm.<state name>.ondown=<python command>
+fsm.<state name>.onleft=<python command>
+fsm.<state name>.onright=<python command>
+fsm.<state name>.onenter=<python command>
+```
+
+**Note**: A special state named ```action``` is designed to execute action and comes back to the initial source state
+
+### To be written...
 
 ##Example
 This repository contains an example of state machine configured as shown in the diagram bellow:
