@@ -28,11 +28,11 @@ from lib.daemon import Daemon
 from lib.configuration import Configuration
 import os, sys, signal, time
 
-# Import lib designed for rendering
-import lib.lcdmanager as lcdmanager 
-import lib.keypressed as keypressed
-import lib.rpimonitordm as rpimonitordm
-import lib.customization as customization 
+# Import plugins designed for rendering
+import plugins.lcdmanager as lcdmanager 
+import plugins.keypressed as keypressed
+import plugins.rpimonitordm as rpimonitordm
+import plugins.customization as customization 
 # NOTE: Before dynamic module loading is implemented, add new modules here
 
 if not os.geteuid() == 0:
@@ -65,8 +65,8 @@ class RpiMonitorLCD(Daemon):
     self.configuration.load('%s/%s' % ( dirname, 'rpimonitorlcd.conf'))
     
     # Define interface behavior
-    self.repeat  = int(self.configuration.data['keyboard']['repeat']) # Define key repeat frequency
-    self.seconds = int(self.configuration.data['backlight']['delay']) # Define light timeout
+    self.repeat  = int(self.configuration.data['keyboard']['repeat'])*5 # Define key repeat frequency
+    self.seconds = int(self.configuration.data['backlight']['delay'])   # Define light timeout
 
     # TODO: Dynamically load library to allow advanced customization 
 
