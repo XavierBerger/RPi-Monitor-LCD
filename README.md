@@ -6,11 +6,11 @@
 **RPi-Monitor-LCD** is designed to display information extracted from [**RPi-Monitor**](https://github.com/XavierBerger/RPi-Monitor) into a [**pcd8544**](https://github.com/XavierBerger/pcd8544) LCD.
 Five buttons connected to the Raspberry Pi through i2c bus and [MCP23008](doc/mcp23008.pdf) chip come in addition to the assembly presented into [**pcd8544**](https://github.com/XavierBerger/pcd8544) project. These five buttons are interpreted by **RPi-Monitor-LCD** as UP, DOWN, LEFT, RIGHT and ENTER.
 
-**RPi-Monitor-LCD** is architectured around a finite state machine powered by [fysom](https://github.com/mriehl/fysom). The state machine behavior is highly configurable and is defined into a dedicated configuration file [rpimonitorlcd.conf](rpimonitor.conf). The state machinecan call additionnal libraries to perform custom actions as define into the configuration file.
+**RPi-Monitor-LCD** is architectured around a finite state machine powered by [fysom](https://github.com/mriehl/fysom). The state machine behavior is highly configurable and is defined into a dedicated configuration file [rpimonitorlcd.conf](rpimonitorlcd.conf). The state machinecan call additionnal libraries to perform custom actions as define into the configuration file.
 
-The project is entended to be a framework easily customizable and not a fully packaged "of-the-shelf" solution. Using **RPi-Monitor-LCD** will certainly require some customization and adaptation (especially if you need to add an additionnal library to be called by the state machine).
+The project is entended to be a framework easily customizable and not a fully packaged "of-the-shelf" solution. Using **RPi-Monitor-LCD** will certainly require some customization and adaptation (specially if you need to add an additionnal plugins to be called by the state machine).
 
-In this repository **RPi-Monitor-LCD** is provided with an example showing the possibilities offered by finite state machine engine and how it can be implemented. This example call additionnal libraries stored in the subdirectory [lib](lib)
+In this repository **RPi-Monitor-LCD** is provided with an example showing the possibilities offered by finite state machine engine and how it can be implemented. This example call additionnal libraries stored in the subdirectory [plugins](plugins)
 
 ## Electronic assembly
 
