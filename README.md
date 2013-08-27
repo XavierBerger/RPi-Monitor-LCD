@@ -18,7 +18,7 @@ In this repository **RPi-Monitor-LCD** is provided with an example showing the p
 
 In the [doc](https://github.com/XavierBerger/RPi-Monitor-LCD/tree/master/doc) directory, you will find an example of implementation working with **RPi-Monitor-LCD**
 
-[![bb](doc/thumb_RPi-Monitor-LCD_bb.png)](doc/RPi-Monitor-LCD_bb.png)
+[![bb](doc/thumb_RPi-Monitor-LCD_bb.png)](doc/thumb_RPi-Monitor-LCD_bb.png)
 
 **Note**: This electronic assembly comes with additionnal components (DS18B20 temperature sensor and a set of 433MHz components) I plan to use in future projects.
 
