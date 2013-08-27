@@ -14,7 +14,7 @@ In this repository **RPi-Monitor-LCD** is provided with an example showing the p
 
 ## Electronic assembly
 
-** /!\ WARNING: This assembly has not been fully tested yet /!\ **
+**/!\ WARNING: This assembly has not been fully tested yet /!\\**
 
 In the [doc](https://github.com/XavierBerger/RPi-Monitor-LCD/tree/master/doc) directory, you will find an example of implementation working with **RPi-Monitor-LCD**
 
