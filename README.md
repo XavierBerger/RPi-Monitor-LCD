@@ -4,19 +4,21 @@
 
 ## Introduction
 **RPi-Monitor-LCD** is designed to display information extracted from [**RPi-Monitor**](https://github.com/XavierBerger/RPi-Monitor) into a [**pcd8544**](https://github.com/XavierBerger/pcd8544) LCD.
-5 buttons connected to the Raspberry Pi through i2c bus and MCP23008 chip come in addition to the assembly presented into [**pcd8544**](https://github.com/XavierBerger/pcd8544) project. These 5 buttons are interpreted by **RPi-Monitor-LCD** as UP, DOWN, LEFT, RIGHT and ENTER.
+5 buttons connected to the Raspberry Pi through i2c bus and [MCP23008](doc/mcp23008.pdf) chip come in addition to the assembly presented into [**pcd8544**](https://github.com/XavierBerger/pcd8544) project. These 5 buttons are interpreted by **RPi-Monitor-LCD** as UP, DOWN, LEFT, RIGHT and ENTER.
 
 **RPi-Monitor-LCD** is architectured around a finite state machine powered by [fysom](https://github.com/mriehl/fysom). The state machine behavior is highly configurable and stored into a configuration file. The configuration file will call additionnal libraries to perform custom actions.
 
-The project is entended to be a framework easily customizable and not a fully packaged solution. Using **RPi-Monitor-LCD** will certainly require some customization and adaptation.
+The project is entended to be a framework easily customizable and not a fully packaged "of-the-shelf" solution. Using **RPi-Monitor-LCD** will certainly require some customization and adaptation.
 
-In this repository **RPi-Monitor-LCD** is provided with a working example showing the possibilities offered by finite state machine engine implementation. 
+In this repository **RPi-Monitor-LCD** is provided with an example showing the possibilities offered by finite state machine engine and how it can be implemented. 
 
 ## Electronic assembly
 
+** /!\ WARNING: This assembly has not been fully tested yet /!\ **
+
 In the [doc](https://github.com/XavierBerger/RPi-Monitor-LCD/tree/master/doc) directory, you will find an example of implementation working with **RPi-Monitor-LCD**
 
-![bb](https://raw.github.com/XavierBerger/RPi-Monitor-LCD/master/doc/RPi-Monitor-LCD_bb.png)
+[![bb](doc/thumb_RPi-Monitor-LCD_bb.png)](doc/RPi-Monitor-LCD_bb.png)
 
 **Note**: This electronic assembly comes with additionnal components (DS18B20 temperature sensor and a set of 433MHz components) I plan to use in future projects.
 
@@ -50,11 +52,11 @@ keyboard.repeat=<Number of cycles before concerning key as repeated>
 backlight.delay=<Number of seconds to turn light on when key pressed >
 ```
 
-Initial state for the FSM
+Initial state for the FSM identified by its unique name &lt;state name&gt;
 
 `fsm.initial=<state name>`
 
-Define the content of a page associated to a state name
+Define the content of a page associated to a &lt;state name&gt;. Each line (identified by a unique line number for the page) defines the python command to be executed to display the page.
 
 `pages.<state name>.content.<line number>=<python command>`
 
@@ -65,7 +67,7 @@ fsm.events.<event id>.src=<state name>
 fsm.events.<event id>.dst=<state name>
 ```
 
-On key pressed callback
+On key pressed callback. This call back is executed during the transition between 2 states. To execute an action without changing the current state, it is required to used the special state named ```action```
 ```
 fsm.<state name>.onup=<python command>
 fsm.<state name>.ondown=<python command>
@@ -74,10 +76,14 @@ fsm.<state name>.onright=<python command>
 fsm.<state name>.onenter=<python command>
 ```
 
-**Note**: A special state named ```action``` is designed to execute action and comes back to the initial source state
-
-### To be written...
+The special state named ```action``` is designed to execute action and comes back to the initial source state. A specific event prefixed by ```backto``` and followed by the name of the initial source state will be created and configured during the finite state machine initialisation.
 
 ##Example
-This repository contains an example of state machine configured as shown in the diagram bellow:
-![fsm](https://raw.github.com/XavierBerger/RPi-Monitor-LCD/master/doc/rpimonitorlcd.png)
+
+Refer to [rpimonitorlcd.conf](rpimonitorlcd.conf) to see an example of implementation. 
+
+The state machine is configured as shown in the diagram bellow:
+
+![fsm](doc/rpimonitorlcd.png)
+
+The initial state is ```logo```. It allow to setup the light and contrast. Once done, hiting ```Enter``` will show the ```Uptime``` page. ```right```, ```enter``` and ```left``` keys allow to navigate between pages.

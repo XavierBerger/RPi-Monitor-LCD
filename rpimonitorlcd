@@ -61,12 +61,12 @@ class RpiMonitorLCD(Daemon):
 
     # Get configuration from file
     self.configuration = Configuration()
-    self.configuration.load('/home/pi/RPi-Monitor-LCD/rpimonitorlcd.conf')
+    dirname=os.path.dirname(os.path.realpath(__file__))
+    self.configuration.load('%s/%s' % ( dirname, 'rpimonitorlcd.conf'))
     
     # Define interface behavior
-    # TODO: Getvalue from configuration file
-    self.repeat  = 25 # Define key repeat frequency
-    self.seconds = 5  # Define light timeout
+    self.repeat  = int(self.configuration.data['keyboard']['repeat']) # Define key repeat frequency
+    self.seconds = int(self.configuration.data['backlight']['delay']) # Define light timeout
 
     # TODO: Dynamically load library to allow advanced customization 
 
@@ -207,6 +207,7 @@ if __name__ == "__main__":
       daemon.restart()
     else:
       print "Unknown command"
+      print "usage: %s start|stop|restart" % sys.argv[0]
       sys.exit(2)
     sys.exit(0)
   else:
