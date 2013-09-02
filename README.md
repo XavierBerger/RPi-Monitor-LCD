@@ -1,6 +1,9 @@
 #[RPi-Monitor-LCD](http://rpi-experiences.blogspot.fr/)
 
 ###Development still in progress. Repository not ready yet for fork...
+> **Update**: 
+> I'm currently waiting for components coming form overseas. <br>
+> The project is almost in hold until the delivery (not expected before end of september...)
 
 ## Introduction
 **RPi-Monitor-LCD** is designed to display information extracted from [**RPi-Monitor**](https://github.com/XavierBerger/RPi-Monitor) into a [**pcd8544**](https://github.com/XavierBerger/pcd8544) LCD.
