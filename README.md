@@ -1,6 +1,9 @@
 #[RPi-Monitor-LCD](http://rpi-experiences.blogspot.fr/)
 
 ###Development still in progress. Repository not ready yet for fork...
+> **Update**: 
+> I'm currently waiting for components coming form overseas. <br>
+> The project is almost in hold until the delivery (not expected before end of september...)
 
 ## Introduction
 **RPi-Monitor-LCD** is designed to display information extracted from [**RPi-Monitor**](https://github.com/XavierBerger/RPi-Monitor) into a [**pcd8544**](https://github.com/XavierBerger/pcd8544) LCD.
@@ -80,7 +83,7 @@ The special state named ```action``` is designed to execute action and comes bac
 
 ##Customisation and plugin creation
 
-The python command used into the configuration file can call additional libraries names plugins. Some plugins are provided inside this repository. If you want to create your own plugin, you should start with the template [plugins/customization.py](plugind/customization.py).
+The python command used into the configuration file can call additional libraries names plugins. Some plugins are provided inside this repository. If you want to create your own plugin, you should start with the template [customization.py](plugins/customization.py).
 
 You can etheir implement your code directly inside this file or copy this file to create a new plugin. If you create a new plugin, it will then be required to add the relevant ```import``` into ```rpimonitorlcd``` (The location to add the line is indicated in inline comment).
 
