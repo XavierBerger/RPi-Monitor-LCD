@@ -54,7 +54,7 @@ class RpiMonitorLCD(Daemon):
 
     # Initialize wiringpi
     wiringpi.wiringPiSetup()
-    wiringpi.mcp23017Setup(PIN_BASE,I2C_ADDR)
+    wiringpi.mcp23008Setup(PIN_BASE,I2C_ADDR)
     for button in BUTTONS:
       wiringpi.pinMode(PIN_BASE + button,INPUT)
       wiringpi.pullUpDnControl(PIN_BASE + button,PUD_UP)
