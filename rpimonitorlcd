@@ -21,9 +21,7 @@
 #
 from fysom import Fysom, FysomError
 import wiringpi2 as wiringpi
-#import lib.fakelib as wiringpi
 import pcd8544.lcd as lcd
-#import lib.fakelib as lcd
 from lib.daemon import Daemon
 from lib.configuration import Configuration
 import os, sys, signal, time
@@ -38,9 +36,13 @@ import plugins.customization as customization
 if not os.geteuid() == 0:
     sys.exit('Script must be run as root')
 
+global CURRENT_DIR
+CURRENT_DIR = os.getcwd();
+
+
 # Define constants
 INPUT, OUTPUT = LOW, HIGH = OFF, ON = [0, 1]
-UP, DOWN, RIGHT, LEFT, ENTER = BUTTONS = [0,1,2,3,4]
+UP, DOWN, RIGHT, LEFT, ENTER = BUTTONS = [0,1,2,3,4] #Order could be customized to match hardware wiring
 PIN_BASE = 64
 I2C_ADDR = 0x20
 PUD_UP = 2
@@ -48,6 +50,7 @@ PUD_UP = 2
 class RpiMonitorLCD(Daemon):
 
   def initialize(self):
+    global CURRENT_DIR;
 
     # Define default values
     self.refreshtimer=-1
@@ -61,8 +64,7 @@ class RpiMonitorLCD(Daemon):
 
     # Get configuration from file
     self.configuration = Configuration()
-    dirname=os.path.dirname(os.path.realpath(__file__))
-    self.configuration.load('%s/%s' % ( dirname, 'rpimonitorlcd.conf'))
+    self.configuration.load('%s/%s' % ( CURRENT_DIR, 'rpimonitorlcd.conf'))
     
     # Define interface behavior
     self.repeat  = int(self.configuration.data['keyboard']['repeat'])*5 # Define key repeat frequency
@@ -198,7 +200,8 @@ class RpiMonitorLCD(Daemon):
 
 if __name__ == "__main__":
   if len(sys.argv) == 2:
-    daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid')
+    daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid','/dev/stdin','/dev/stdout','/dev/stderr') #Debug
+    #daemon = RpiMonitorLCD('/var/run/rpimonitorlcd.pid')
     if 'start' == sys.argv[1]:
       daemon.start()
     elif 'stop' == sys.argv[1]:
