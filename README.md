@@ -24,6 +24,10 @@ In the [doc](https://github.com/XavierBerger/RPi-Monitor-LCD/tree/master/doc) di
 
 **Note**: This electronic assembly comes with additionnal components (DS18B20 temperature sensor and a set of 433MHz components) I plan to use in future projects.
 
+Here is the PCB created by [etronics](http://etronics.free.fr/boutique/boutique.htm)
+
+![pcbprinted](doc/RPi-Monitor-LCD_PCBprinted.png)
+
 ## Installation
 
 Install the dependencies with the following commands:
