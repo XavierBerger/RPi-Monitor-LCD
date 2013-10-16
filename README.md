@@ -28,6 +28,10 @@ Here is the PCB created by [etronics](http://etronics.free.fr/boutique/boutique.
 
 ![pcbprinted](doc/RPi-Monitor-LCD_PCBprinted.png)
 
+And the PCB with the component presented (with the LCD screen upside down)
+
+![pcbcomponents](doc/RPi-Monitor-LCD_PCBwithComponents.png)
+
 ## Installation
 
 Install the dependencies with the following commands:
