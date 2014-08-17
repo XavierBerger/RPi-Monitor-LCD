@@ -1,8 +1,5 @@
 #[RPi-Monitor-LCD](http://rpi-experiences.blogspot.fr/)
 
-###Development still in progress. Repository not ready yet for fork...
-
-
 ## Introduction
 **RPi-Monitor-LCD** is designed to display information extracted from [**RPi-Monitor**](https://github.com/XavierBerger/RPi-Monitor) into a [**pcd8544**](https://github.com/XavierBerger/pcd8544) LCD.
 Five buttons connected to the Raspberry Pi through i2c bus and [MCP23008](doc/mcp23008.pdf) chip come in addition to the assembly presented into [**pcd8544**](https://github.com/XavierBerger/pcd8544) project. These five buttons are interpreted by **RPi-Monitor-LCD** as UP, DOWN, LEFT, RIGHT and ENTER.
