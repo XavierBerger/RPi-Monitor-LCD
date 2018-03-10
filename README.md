@@ -1,4 +1,4 @@
-#[RPi-Monitor-LCD](http://rpi-experiences.blogspot.fr/)
+# [RPi-Monitor-LCD](http://rpi-experiences.blogspot.fr/)
 
 ## Introduction
 **RPi-Monitor-LCD** is designed to display information extracted from [**RPi-Monitor**](https://github.com/XavierBerger/RPi-Monitor) into a [**pcd8544**](https://github.com/XavierBerger/pcd8544) LCD.
@@ -91,7 +91,7 @@ The python command used into the configuration file can call additional librarie
 
 You can etheir implement your code directly inside this file or copy this file to create a new plugin. If you create a new plugin, it will then be required to add the relevant ```import``` into ```rpimonitorlcd``` (The location to add the line is indicated in inline comment).
 
-##Example
+## Example
 
 Refer to [rpimonitorlcd.conf](rpimonitorlcd.conf) to see an example of implementation. 
 
